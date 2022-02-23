@@ -4,20 +4,42 @@ name: IBM Cloud App Configuration Sync
 author: Josephine Eskaline Joyce
 description: workflow to import configurations to IBM Cloud App Configuration service
 
+inputs:
+  IBM_CLOUD_API_KEY: 
+    description: 'IBM Cloud API Key'
+    required: true
+    default: 'apikey'
+  IBM_CLOUD_REGION: 
+    description: 'IBM Cloud region'
+    required: true
+    default: 'us-south'
+  IBM_CLOUD_RESOURCE_GROUP: 
+    description: 'IBM Cloud Resouce group'
+    required: true
+    default: 'default'
+  AC_INSTANCE_ID: instanceid
+    description: 'IBM Cloud App Configuration instance id'
+    required: true
+    default: 'guid'
+  CONFIG_FILE_NAME: 
+    description: 'JSON File containing the configurations'
+    required: true
+    default: 'appconfig.json'
+  GITHUB_REPO: reponame
+    description: 'Repo name - ${{ github.repository }}'
+    required: true
+    default: '${{ github.repository }}'
+  GITHUB_PULL_NUMBER: 
+    description: 'Commit number of the pull request - ${{ github.event.pull_request.number  }}'
+    required: true
+    default: '${{ github.event.pull_request.number  }}'
+
 # Controls when the workflow will run
 on:
   # Triggers the workflow on pull request are approved
   pull_request:
     branches: [ main ]
     types: [ closed ]
-env:
-  IBM_CLOUD_API_KEY: cloudkey
-  IBM_CLOUD_REGION: au-syd
-  IBM_CLOUD_RESOURCE_GROUP: default
-  AC_INSTANCE_ID: instanceid
-  CONFIG_FILE_NAME: appconfig.json
-  GITHUB_REPO: reponame
-  GITHUB_PULL_NUMBER: pullnumber
 
 runs:
   using: "composite"
@@ -30,11 +52,12 @@ runs:
       id: fileChangeMonitor
       shell: bash
       run: |
+        
         configurationUpdated=false
-        URL="https://api.github.com/repos/${GITHUB_REPO}/pulls/${GITHUB_PULL_NUMBER}/files"
+        URL="https://api.github.com/repos/${{ inputs.GITHUB_REPO }}/pulls/${{ inputs.GITHUB_PULL_NUMBER }}/files"
         FILES=$(curl -s -X GET -G $URL | jq -r '.[] | .filename')
         echo $FILES
-        if echo $FILES | grep -q "$CONFIG_FILE_NAME"; then
+        if echo $FILES | grep -q "${{ inputs.CONFIG_FILE_NAME }}"; then
           configurationUpdated=true
           echo "Configuration file is updated. "
         fi          
@@ -47,8 +70,8 @@ runs:
           ibmcloud plugin install app-configuration
         
           #App Configuration plugin to import configuration
-          ibmcloud login --apikey "${IBM_CLOUD_API_KEY}" -r "${IBM_CLOUD_REGION}" -g "${IBM_CLOUD_RESOURCE_GROUP}" 
-          ibmcloud ac init --instance_id "${AC_INSTANCE_ID}"
+          ibmcloud login --apikey "${{ inputs.IBM_CLOUD_API_KEY }}" -r "${{ inputs.IBM_CLOUD_REGION }}" -g "${{ inputs.IBM_CLOUD_RESOURCE_GROUP }}" 
+          ibmcloud ac init --instance_id "${{ inputs.AC_INSTANCE_ID }}"
           ibmcloud ac import --file ./appconfig.json --clean true
         else
           echo "Configuration file is not updated.  No action required"
