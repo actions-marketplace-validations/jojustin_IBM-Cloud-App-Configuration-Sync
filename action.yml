@@ -17,7 +17,7 @@ inputs:
     description: 'IBM Cloud Resouce group'
     required: true
     default: 'default'
-  AC_INSTANCE_ID: instanceid
+  AC_INSTANCE_ID: 
     description: 'IBM Cloud App Configuration instance id'
     required: true
     default: 'guid'
@@ -25,7 +25,7 @@ inputs:
     description: 'JSON File containing the configurations'
     required: true
     default: 'appconfig.json'
-  GITHUB_REPO: reponame
+  GITHUB_REPO: 
     description: 'Repo name - ${{ github.repository }}'
     required: true
     default: '${{ github.repository }}'
