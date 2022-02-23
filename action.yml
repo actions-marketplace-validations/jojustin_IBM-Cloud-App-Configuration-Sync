@@ -20,6 +20,7 @@ env:
   GITHUB_PULL_NUMBER: pullnumber
 
 runs:
+  using: "composite"
   steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
@@ -27,6 +28,7 @@ runs:
     # Verify if the configuration file is updated
     - name: Check file change
       id: fileChangeMonitor
+      shell: bash
       run: |
         configurationUpdated=false
         URL="https://api.github.com/repos/${GITHUB_REPO}/pulls/${GITHUB_PULL_NUMBER}/files"
@@ -51,4 +53,4 @@ runs:
         else
           echo "Configuration file is not updated.  No action required"
         fi
-      shell: bash
+      
