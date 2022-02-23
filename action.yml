@@ -1,6 +1,6 @@
 # This is a workflow to import configurations to IBM Cloud App Configuration service
 
-name: CI
+name: IBM Cloud App Configuration Sync
 
 # Controls when the workflow will run
 on:
