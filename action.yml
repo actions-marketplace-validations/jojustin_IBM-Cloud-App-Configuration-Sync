@@ -51,3 +51,4 @@ runs:
         else
           echo "Configuration file is not updated.  No action required"
         fi
+      shell: bash
