@@ -26,11 +26,11 @@ inputs:
     required: true
     default: 'appconfig.json'
   GITHUB_REPO: 
-    description: 'Repo name - ${{ github.repository }}'
+    description: 'Repo name'
     required: true
     default: '${{ github.repository }}'
   GITHUB_PULL_NUMBER: 
-    description: 'Commit number of the pull request - ${{ github.event.pull_request.number  }}'
+    description: 'Commit number of the pull request'
     required: true
     default: '${{ github.event.pull_request.number  }}'
 
