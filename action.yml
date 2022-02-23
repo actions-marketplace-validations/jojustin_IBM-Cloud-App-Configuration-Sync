@@ -19,38 +19,35 @@ env:
   GITHUB_REPO: reponame
   GITHUB_PULL_NUMBER: pullnumber
 
-jobs:
-  updateConfig:
-    runs-on: ubuntu-latest
+runs:
+  steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
 
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-
-      # Verify if the configuration file is updated
-      - name: Check file change
-        id: fileChangeMonitor
-        run: |
-          configurationUpdated=false
-          URL="https://api.github.com/repos/${GITHUB_REPO}/pulls/${GITHUB_PULL_NUMBER}/files"
-          FILES=$(curl -s -X GET -G $URL | jq -r '.[] | .filename')
-          echo $FILES
-          if echo $FILES | grep -q "$CONFIG_FILE_NAME"; then
-            configurationUpdated=true
-            echo "Configuration file is updated. "
-          fi          
-          if [ "$configurationUpdated" == "true" ]
-          then
-            #Install IBM Cloud CLI 
-            curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
-            ibmcloud --version
-            ibmcloud config --check-version=false
-            ibmcloud plugin install app-configuration
-          
-            #App Configuration plugin to import configuration
-            ibmcloud login --apikey "${IBM_CLOUD_API_KEY}" -r "${IBM_CLOUD_REGION}" -g "${IBM_CLOUD_RESOURCE_GROUP}" 
-            ibmcloud ac init --instance_id "${AC_INSTANCE_ID}"
-            ibmcloud ac import --file ./appconfig.json --clean true
-          else
-            echo "Configuration file is not updated.  No action required"
-          fi
+    # Verify if the configuration file is updated
+    - name: Check file change
+      id: fileChangeMonitor
+      run: |
+        configurationUpdated=false
+        URL="https://api.github.com/repos/${GITHUB_REPO}/pulls/${GITHUB_PULL_NUMBER}/files"
+        FILES=$(curl -s -X GET -G $URL | jq -r '.[] | .filename')
+        echo $FILES
+        if echo $FILES | grep -q "$CONFIG_FILE_NAME"; then
+          configurationUpdated=true
+          echo "Configuration file is updated. "
+        fi          
+        if [ "$configurationUpdated" == "true" ]
+        then
+          #Install IBM Cloud CLI 
+          curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
+          ibmcloud --version
+          ibmcloud config --check-version=false
+          ibmcloud plugin install app-configuration
+        
+          #App Configuration plugin to import configuration
+          ibmcloud login --apikey "${IBM_CLOUD_API_KEY}" -r "${IBM_CLOUD_REGION}" -g "${IBM_CLOUD_RESOURCE_GROUP}" 
+          ibmcloud ac init --instance_id "${AC_INSTANCE_ID}"
+          ibmcloud ac import --file ./appconfig.json --clean true
+        else
+          echo "Configuration file is not updated.  No action required"
+        fi
