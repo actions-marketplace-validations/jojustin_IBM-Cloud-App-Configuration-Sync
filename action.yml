@@ -16,6 +16,8 @@ env:
   IBM_CLOUD_RESOURCE_GROUP: default
   AC_INSTANCE_ID: instanceid
   CONFIG_FILE_NAME: appconfig.json
+  GITHUB_REPO: reponame
+  GITHUB_PULL_NUMBER: pullnumber
 
 jobs:
   updateConfig:
@@ -29,7 +31,7 @@ jobs:
       - name: Check file change
         id: fileChangeMonitor
         run: |
-          URL="https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files"
+          URL="https://api.github.com/repos/${GITHUB_REPO}/pulls/${GITHUB_PULL_NUMBER}/files"
           FILES=$(curl -s -X GET -G $URL | jq -r '.[] | .filename')
           echo $FILES
           if echo $FILES | grep -q "$CONFIG_FILE_NAME"; then
