@@ -49,7 +49,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: jojustin/IBM-Cloud-App-Configuration-Sync@v0.1
+      - uses: jojustin/IBM-Cloud-App-Configuration-Syncv0.1.0
         with:
           IBM_CLOUD_API_KEY: ${{ secrets.IBM_CLOUD_API_KEY }}
           AC_INSTANCE_ID: ${{ secrets.IBM_CLOUD_AC_INSTANCE_ID }}
