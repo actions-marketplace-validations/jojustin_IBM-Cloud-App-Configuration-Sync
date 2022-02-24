@@ -11,6 +11,19 @@ To start using this GitHub action, go to your repository and click the "Actions"
 
 IBM Cloud API Key & App Configuration Instance GUID should be stored as [secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets) in the names IBM_CLOUD_API_KEY & IBM_CLOUD_AC_INSTANCE_ID respectively.
 
+## Input parameters
+
+| Input parameter      | Description | Required     |
+| :---        |    :----:   |          ---: |
+| IBM_CLOUD_API_KEY | IBM Cloud Api key for account login   | Yes |
+| AC_INSTANCE_ID | IBM Cloud App Configuration Instance guid | Yes |
+| IBM_CLOUD_REGION | IBM Cloud App Configuration Instance region | Yes |
+| IBM_CLOUD_RESOURCE_GROUP | IBM Cloud App Configuration Instance resource group | Yes |
+| CONFIG_FILE_NAME | Configuration file in the repository  | Yes |
+| GITHUB_REPO | Value should be ${{ github.repository }}  | Yes |
+| GITHUB_PULL_NUMBER | Value should be ${{ github.event.pull_request.number }}  | Yes |
+
+
 ## Usage example
 
 The following example updates the App Configuration instance when pull requests are merged with changes to appconfig.json.
